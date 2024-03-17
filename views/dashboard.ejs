@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../public/css/styles.css">
+</head>
+<script>
+    function sendRequest() {
+      // Creating a new date object for the timestamp
+      var now = new Date();
+      
+      // Preparing the JSON data with the current timestamp and direction "In"
+      var data = JSON.stringify({
+        "TimeStamp": now.toISOString(),
+        "Direction": "In"
+      });
+    
+      // Creating a new XMLHttpRequest
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://localhost:3000/data", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+    
+      // Setting up what happens when the request is successful
+      xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          console.log('Success:', xhr.responseText);
+        } else {
+          console.error('Request failed with status:', xhr.status);
+        }
+      };
+    
+      // Sending the request with the data
+      xhr.send(data);
+    }
+    function sendOutRequest() {
+      // Creating a new date object for the timestamp
+      var now = new Date();
+      
+      // Preparing the JSON data with the current timestamp and direction "In"
+      var data = JSON.stringify({
+        "TimeStamp": now.toISOString(),
+        "Direction": "Out"
+      });
+    
+      // Creating a new XMLHttpRequest
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://localhost:3000/data", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+    
+      // Setting up what happens when the request is successful
+      xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          console.log('Success:', xhr.responseText);
+        } else {
+          console.error('Request failed with status:', xhr.status);
+        }
+      };
+    
+      // Sending the request with the data
+      xhr.send(data);
+    }
+    </script>
+<body>
+    <div class="container">
+        <div class="full top">
+            <div class="header">
+                <h1>Dashboard - <i>CrowdSense</i></h1>
+            </div>
+        </div>
+        <div class="full toplittle">
+            <div class="header">
+                <button onclick="sendRequest()">Go In</button>
+                <button onclick="sendOutRequest()">Go Out</button>
+            </div>
+        </div>
+        <div class="half top-left">
+            <div class="content-box">
+                <h1>People in: </br></br><%= counts.in %></h1>
+            </div>
+        </div>
+        <div class="half top-left">
+            <div class="content-box">
+                <h1>People out: </br></br><%= counts.out %></h1>
+            </div>
+        </div>
+        <div class="half top-right">
+            <div class="content-box">
+                <h1>People inside: </br></br><%= counts.inside %></h1>
+            
+               
+            </div>
+        </div>
+        
+        <div class="full bottom">
+            <div class="content-box table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>TimeStamp</th>
+                            <th>Direction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% data.forEach((item) => { %>
+                            <tr>
+                                <td><%= item.TimeStamp %></td>
+                                <td><%= item.Direction %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
