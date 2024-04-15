@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../public/css/styles.css">
+</head>
+<script>
+    function sendRequest() {
+      // Creating a new date object for the timestamp
+      var now = new Date();
+      
+      // Preparing the JSON data with the current timestamp and direction "In"
+      var data = JSON.stringify({
+        "TimeStamp": now.toISOString(),
+        "Direction": "In"
+      });
+    
+      // Creating a new XMLHttpRequest
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://localhost:3000/data", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+    
+      // Setting up what happens when the request is successful
+      xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          console.log('Success:', xhr.responseText);
+        } else {
+          console.error('Request failed with status:', xhr.status);
+        }
+      };
+    
+      // Sending the request with the data
+      xhr.send(data);
+    }
+    function sendOutRequest() {
+      // Creating a new date object for the timestamp
+      var now = new Date();
+      
+      // Preparing the JSON data with the current timestamp and direction "In"
+      var data = JSON.stringify({
+        "TimeStamp": now.toISOString(),
+        "Direction": "Out"
+      });
+    
+      // Creating a new XMLHttpRequest
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://localhost:3000/data", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+    
+      // Setting up what happens when the request is successful
+      xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          console.log('Success:', xhr.responseText);
+        } else {
+          console.error('Request failed with status:', xhr.status);
+        }
+      };
+    
+      // Sending the request with the data
+      xhr.send(data);
+    }
+    </script>
+<body>
+    <div class="container">
+        <div class="full top">
+            <div class="header">
+                <h1>Dashboard - <i>CrowdSense</i></h1>
+            </div>
+        </div>
+        <div class="full toplittle">
+            <div class="header">
+                <button onclick="sendRequest()">Go In</button>
+                <button onclick="sendOutRequest()">Go Out</button>
+            </div>
+        </div>
+        <div class="half top-left">
+            <div class="content-box">
+                <h1>People in: </br></br><%= counts.in %></h1>
+            </div>
+        </div>
+        <div class="half top-left">
+            <div class="content-box">
+                <h1>People out: </br></br><%= counts.out %></h1>
+                <div>
+                    <canvas id="smting"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="half top-right">
+            <div class="content-box">
+                <h1>People inside: </br></br><%= counts.inside %></h1>
+                <div>
+                    <canvas id="myChart"></canvas>
+                </div>
+                  
+            
+               
+            </div>
+        </div>
+        
+        <div class="full bottom">
+            <div class="content-box table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>TimeStamp</th>
+                            <th>Direction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% data.forEach((item) => { %>
+                            <tr>
+                                <td><%= item.TimeStamp %></td>
+                                <td><%= item.Direction %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script>
+    const ctx = document.getElementById('myChart');
+    smting = document.getElementById('smting');
+    const timestamps = <%- JSON.stringify(counts.timestamps) %>;
+    const peopleCounts = <%- JSON.stringify(counts.peopleCounts) %>;
+    timestamps.push("Now")
+    peopleCounts.push(<%= counts.inside %>)
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: timestamps,
+        datasets: [{
+          label: 'People inside',
+          data: peopleCounts,
+          borderWidth: 1,
+          fill: true
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+    new Chart(smting, {
+    type: 'line',
+    data: {
+      labels: timestamps,
+      datasets: [{
+        label: 'People inside',
+        data: peopleCounts,
+        borderWidth: 1,
+        fill: true,
+        tension: 0.4,
+        // Hides the point labels on the line
+        pointRadius: 0,
+        pointHitRadius: 0,
+        pointHoverRadius: 0
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          // Hide Y axis labels and ticks
+          ticks: {
+            display: false // This will remove the Y axis labels (the tick labels)
+          },
+          grid: {
+            drawBorder: false, // This removes the Y axis line
+            display: false // This removes the Y axis grid lines
+          }
+        },
+        x: {
+          // Hide X axis labels and ticks
+          ticks: {
+            display: false // This will remove the X axis labels (the tick labels)
+          },
+          grid: {
+            drawBorder: false, // This removes the X axis line
+            display: false // This removes the X axis grid lines
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: false // This will hide the dataset label that's shown on top like a legend.
+        }
+      },
+      elements: {
+        line: {
+          tension: 0 // This will make the line straight; set it to a value between 0 and 1 for some curve.
+        }
+      }
+    }
+  });
+  </script>
+  <script>
+    // Hide Header on on scroll down
+        var didScroll;
+        var lastScrollTop = 0;
+        var delta = 5;
+        var navbarHeight = $('header').outerHeight();
+
+        $(window).scroll(function(event){
+            didScroll = true;
+        });
+
+        setInterval(function() {
+            if (didScroll) {
+                hasScrolled();
+                didScroll = false;
+            }
+        }, 250);
+
+        function hasScrolled() {
+            var st = $(this).scrollTop();
+            
+            // Make sure they scroll more than delta
+            if(Math.abs(lastScrollTop - st) <= delta)
+                return;
+            
+            // If they scrolled down and are past the navbar, add class .nav-up.
+            // This is necessary so you never see what is "behind" the navbar.
+            if (st > lastScrollTop && st > navbarHeight){
+                // Scroll Down
+                $('header').removeClass('nav-down').addClass('nav-up');
+            } else {
+                // Scroll Up
+                if(st + $(window).height() < $(document).height()) {
+                    $('header').removeClass('nav-up').addClass('nav-down');
+                }
+            }
+            
+            lastScrollTop = st;
+        }
+  </script>
+
+</html>
