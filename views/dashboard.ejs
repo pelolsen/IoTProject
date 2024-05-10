@@ -49,7 +49,7 @@
                 <div class="card" style="display: flex;"">
                     <div style="width: 60%;">
                         <div class="card-header">Temperature</div>
-                        <div class="card-content increase" style="padding-bottom: 20px;">22°C ↑ +0,2°C</div>
+                        <div class="card-content increase" style="padding-bottom: 20px;"><%= counts.temperature %>°C</div>
                     </div>
                     <div style="width: 40%; justify-content: center; ">
                         <div style="height: 100px; width: 100px;">
@@ -60,7 +60,7 @@
                 <div class="card" style="display: flex;"">
                     <div style="width: 60%;">
                         <div class="card-header">Humidity</div>
-                        <div class="card-content decrease" style="padding-bottom: 20px;">65.4% ↓ +5%</div>
+                        <div class="card-content increase" style="padding-bottom: 20px;"><%= counts.humidity %>%</div>
                     </div>
                     <div style="width: 40%; justify-content: center; ">
                         <div style="height: 100px; width: 100px;">
@@ -71,7 +71,7 @@
                 <div class="card" style="display: flex;"">
                     <div style="width: 60%;">
                         <div class="card-header">Pressure</div>
-                        <div class="card-content decrease" style="padding-bottom: 20px;">1107 hPa ↓ -10</div>
+                        <div class="card-content increase" style="padding-bottom: 20px;"><%= counts.preassure %> hPa</div>
                     </div>
                     <div style="width: 40%; justify-content: center; ">
                         <div style="height: 100px; width: 100px;">
@@ -79,6 +79,47 @@
                         </div>
                     </div>
                 </div>
+                <div class="card large">
+                  <div class="card-header">Table View</div>
+                  <div class="scrollable-table">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Timestamp</th>
+                          <th>Direction</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% 
+                          function formatTimestamp(timestamp) {
+                            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+                            return new Date(timestamp).toLocaleDateString("en-US", options);
+                          }
+
+                          function formatDirection(direction) {
+                            if (direction === "In") {
+                              return "Ingress";
+                            } else if (direction === "Out") {
+                              return "Egress";
+                            }
+                            return direction;
+                          }
+                          %>
+
+                          <% data.forEach((item) => { %>
+                            <tr>
+                                <td><%= formatTimestamp(item.TimeStamp) %></td>
+                                <td><%= formatDirection(item.Direction) %></td>
+                            </tr>
+                        <% }); %>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              
+                <!-- Add more cards as necessary -->
+              </div>
                 
             </div>
            </div>

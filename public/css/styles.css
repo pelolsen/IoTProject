@@ -63,3 +63,31 @@ main{
     color: #333;
     margin-bottom: 10px;
   }
+  .card.large {
+    grid-column: span 2; /* Span 2 columns for larger cards */
+    max-height: 300px; /* Set a max-height for the large card */
+    display: flex;
+    flex-direction: column;
+  }
+  .card-header {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  .scrollable-table {
+    overflow-y: auto; /* Make table scrollable */
+    margin-top: 10px;
+    flex-grow: 1;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #eee; /* Add a subtle border to table rows */
+  }
+  th {
+    color: #555;
+  }
